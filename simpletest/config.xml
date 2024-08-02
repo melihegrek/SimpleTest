@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <threads>
+        <thread priority="2" target="100000000"/>
+        <thread priority="8" target="100000000"/>
+        <thread priority="16" target="100000000"/>
+ 
+    </threads>
+</root>
