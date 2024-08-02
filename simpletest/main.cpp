@@ -17,8 +17,11 @@ std::vector<std::thread> threads;  // Tüm iş parçacıklarını saklamak için
 void parseConfigXML();
 void threadTaskFunc(int priority, int target); // İş parçacığı işlevi
 void clearFile(const std::string&);
-// Global değişken
-bool isFirstWrite = true;
+
+
+// Queue and Mutex
+std::queue<std::string> logQueue;
+std::mutex logQueueMutex;
 
 int main() {
 
@@ -51,6 +54,29 @@ int main() {
 
     // Stop logger
     logger.stop();
+
+    std::ofstream outFile("record.csv", std::ios::out | std::ios::trunc);
+if (outFile.is_open()) {
+
+    // İlk yazmada başlıkları ekle
+    outFile << "Priority,StartEpoch,EndEpoch\n";
+    
+    // Queue'dan verileri dosyaya yaz
+    while (!logQueue.empty()) {
+        std::string logEntry;
+        {
+            std::lock_guard<std::mutex> lock(logQueueMutex);
+            if (!logQueue.empty()) {
+                logEntry = logQueue.front();
+                logQueue.pop();
+            }
+        }
+        outFile << logEntry << "\n";
+    }
+    outFile.close();
+} else {
+    std::cerr << "Unable to open file record.csv";
+}
 
     return 0;
 }
@@ -100,22 +126,14 @@ void threadTaskFunc(int priority, int target) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     logger.log("threadTaskFunc", "Thread duration: " + std::to_string(duration) + " milliseconds");
     
-    // CSV dosyasına verileri yaz
-    std::ofstream outFile("record.csv", std::ios::app);
-    if (outFile.is_open()) {
-        // İlk yazmada başlıkları ekle
-        if (isFirstWrite) {
-            clearFile("record.csv"); // Dosyayı temizle
-            outFile << "Priority,StartEpoch,EndEpoch\n";
-            isFirstWrite = false;
-        }
-        outFile << priority << "," << startEpochMicro << "," << endEpochMicro << "\n";
-        outFile.close();
-    } else {
-        std::cerr << "Unable to open file record.csv";
+    // Add log entry to queue
+    {
+        std::lock_guard<std::mutex> lock(logQueueMutex);
+        logQueue.push(std::to_string(priority) + "," + std::to_string(startEpochMicro) + "," + std::to_string(endEpochMicro));
     }
 }
- void clearFile(const std::string& filename) {
+ void clearFile(const std::string& filename) {      //unsused function right now.
+
     // Dosyayı aç, içeriğini temizle ve kapat
     std::ofstream outFile(filename, std::ios::out | std::ios::trunc);
     if (!outFile) {

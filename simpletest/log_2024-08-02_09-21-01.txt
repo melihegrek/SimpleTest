@@ -1,0 +1,10 @@
+2024-08-02 09:21:01 [main] Logger is running
+2024-08-02 09:21:01 [threadTaskFunc] Thread started at epoch time 1722579661876180 microseconds with priority 2
+2024-08-02 09:21:01 [threadTaskFunc] Thread started at epoch time 1722579661876621 microseconds with priority 8
+2024-08-02 09:21:01 [threadTaskFunc] Thread started at epoch time 1722579661877001 microseconds with priority 16
+2024-08-02 09:21:02 [threadTaskFunc] Thread with priority 8 ended at epoch time 1722579662144966 microseconds
+2024-08-02 09:21:02 [threadTaskFunc] Thread duration: 268 milliseconds
+2024-08-02 09:21:02 [threadTaskFunc] Thread with priority 2 ended at epoch time 1722579662148452 microseconds
+2024-08-02 09:21:02 [threadTaskFunc] Thread duration: 272 milliseconds
+2024-08-02 09:21:02 [threadTaskFunc] Thread with priority 16 ended at epoch time 1722579662151503 microseconds
+2024-08-02 09:21:02 [threadTaskFunc] Thread duration: 274 milliseconds
